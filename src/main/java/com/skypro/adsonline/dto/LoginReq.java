@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class LoginReq {
-    private String password;
-    private String username;
+    private String password; // пароль
+    private String username; // логин
 
 }
