@@ -145,8 +145,9 @@ public class AdController {
             tags = "Объявления"
     )
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> removeAd(@PathVariable("id") Integer id) {
-        if(adService.removeAd(id)) {
+    public ResponseEntity<?> removeAd(@PathVariable("id") Integer id,
+                                      @AuthenticationPrincipal SecurityUser currentUser) {
+        if(adService.removeAd(id, currentUser)) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -180,8 +181,10 @@ public class AdController {
             tags = "Объявления"
     )
     @PatchMapping("/{id}")
-    public ResponseEntity<Ads> updateAds(@PathVariable("id") Integer id, @RequestBody CreateAds ads) {
-        Ads ads1 = adService.updateAds(id, ads);
+    public ResponseEntity<Ads> updateAds(@PathVariable("id") Integer id,
+                                         @RequestBody CreateAds ads,
+                                         @AuthenticationPrincipal SecurityUser currentUser) {
+        Ads ads1 = adService.updateAds(id, ads, currentUser);
         if(ads1 != null) {
             return ResponseEntity.ok(ads1);
         } else {
@@ -246,8 +249,9 @@ public class AdController {
     @PatchMapping(value = "/{id}/image", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<?> updateImage(
             @PathVariable("id") Integer id,
-            @RequestPart(name = "image") MultipartFile image) {
-        if(adService.updateImage(id, image)) {
+            @RequestPart(name = "image") MultipartFile image,
+            @AuthenticationPrincipal SecurityUser currentUser) {
+        if(adService.updateImage(id, image,currentUser)) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

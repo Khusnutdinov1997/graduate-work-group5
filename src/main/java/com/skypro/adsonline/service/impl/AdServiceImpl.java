@@ -1,17 +1,17 @@
 package com.skypro.adsonline.service.impl;
 
-import com.skypro.adsonline.dto.Ads;
-import com.skypro.adsonline.dto.FullAds;
-import com.skypro.adsonline.dto.CreateAds;
-import com.skypro.adsonline.dto.ResponseWrapperAds;
+import com.skypro.adsonline.dto.*;
 import com.skypro.adsonline.exception.AdNotFoundException;
 import com.skypro.adsonline.model.AdModel;
 import com.skypro.adsonline.repository.AdRepository;
 import com.skypro.adsonline.security.SecurityUser;
 import com.skypro.adsonline.service.AdService;
 import com.skypro.adsonline.utils.AdMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -41,14 +41,16 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
-    public boolean removeAd(Integer id) {
+    public boolean removeAd(Integer id,SecurityUser currentUser) {
+        checkAccess(id,currentUser);
         AdModel adModel = adRepository.findById(id).orElseThrow(() -> new AdNotFoundException("Advertisement %s not found".formatted(id)));
         adRepository.delete(adModel);
         return true;
     }
 
     @Override
-    public Ads updateAds(Integer id, CreateAds ads) {
+    public Ads updateAds(Integer id, CreateAds ads,SecurityUser currentUser) {
+        checkAccess(id,currentUser);
         AdModel adModel = adRepository.findById(id).orElseThrow(() -> new AdNotFoundException("Advertisement %s not found".formatted(id)));
 
         adModel.setTitle(ads.getTitle());
@@ -77,7 +79,7 @@ public class AdServiceImpl implements AdService {
     }
 
     @Override
-    public boolean updateImage(Integer id, MultipartFile image) {
+    public boolean updateImage(Integer id, MultipartFile image, SecurityUser currentUser) {
         return false;
     }
 
@@ -87,5 +89,24 @@ public class AdServiceImpl implements AdService {
                 .map(adMapper::mapToAdDto)
                 .toList();
         return new ResponseWrapperAds(ads.size(), ads);
+    }
+
+    /**
+     * Author of advertisement should be the same as logged user.
+     * If ad-author does not match logged user OR the user is not ADMIN then access is denied.
+     * @param id ad id
+     * @param currentUser logged user
+     */
+
+    private void checkAccess(Integer id, SecurityUser currentUser) {
+        Integer authorId = adRepository
+                .findById(id)
+                .orElseThrow(() -> new AdNotFoundException("Advertisement %s not found".formatted(id)))
+                .getAuthor()
+                .getId();
+        if (!authorId.equals(currentUser.getUser().getId())
+                || !currentUser.getAuthorities().contains(new SimpleGrantedAuthority(Role.ADMIN.name()))) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access Denied!".formatted(currentUser.getUsername()));
+        }
     }
 }

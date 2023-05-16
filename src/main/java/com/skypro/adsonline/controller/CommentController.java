@@ -123,8 +123,10 @@ public class CommentController {
             tags = "Комментарии"
     )
     @DeleteMapping("/{adId}/comment/{commentId}")
-    public ResponseEntity<?> deleteComment(@PathVariable Integer adId, @PathVariable Integer commentId) {
-        if(commentsService.deleteComment(adId, commentId)) {
+    public ResponseEntity<?> deleteComment(@PathVariable Integer adId,
+                                           @PathVariable Integer commentId,
+                                           @AuthenticationPrincipal SecurityUser currentUser) {
+        if(commentsService.deleteComment(adId, commentId, currentUser)) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -161,9 +163,10 @@ public class CommentController {
     public ResponseEntity<?> updateComment(
             @PathVariable Integer adId,
             @PathVariable Integer commentId,
-            @RequestBody Comment comment) {
+            @RequestBody Comment comment,
+            @AuthenticationPrincipal SecurityUser currentUser) {
 
-        Comment updatedComment = commentsService.updateComment(adId, commentId, comment);
+        Comment updatedComment = commentsService.updateComment(adId, commentId, comment,currentUser);
         if(updatedComment != null) {
             return ResponseEntity.ok(updatedComment);
         } else {

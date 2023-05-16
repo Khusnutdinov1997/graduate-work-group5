@@ -14,15 +14,15 @@ public interface AdService {
 
     FullAds getAds(Integer id);
 
-    boolean removeAd(Integer id);
+    boolean removeAd(Integer id,SecurityUser currentUser);
 
-    Ads updateAds(Integer id, CreateAds ads);
+    Ads updateAds(Integer id, CreateAds ads,SecurityUser currentUser);
 
     ResponseWrapperAds getAdsMe(SecurityUser currentUser);
 
     ResponseWrapperAds getAllAds();
 
-    boolean updateImage(Integer id, MultipartFile image);
+    boolean updateImage(Integer id, MultipartFile image,SecurityUser currentUser);
 
     ResponseWrapperAds getAdsByTitleMatch(String title);
 }
