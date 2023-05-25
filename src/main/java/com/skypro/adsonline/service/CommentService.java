@@ -2,16 +2,17 @@ package com.skypro.adsonline.service;
 
 import com.skypro.adsonline.dto.Comment;
 import com.skypro.adsonline.dto.ResponseWrapperComment;
-import com.skypro.adsonline.security.SecurityUser;
+import org.springframework.security.core.userdetails.UserDetails;
+
 
 public interface CommentService {
 
-    ResponseWrapperComment getComments(Integer id);
+    ResponseWrapperComment getComments(Integer id, UserDetails currentUser);
 
-    Comment addComment(Integer id, Comment comment, SecurityUser currentUser);
+    Comment addComment(Integer id, Comment comment, UserDetails currentUser);
 
-    boolean deleteComment(Integer adId, Integer commentId,SecurityUser currentUser);
+    boolean deleteComment(Integer adId, Integer commentId,UserDetails currentUser);
 
-    Comment updateComment(Integer adId, Integer commentId, Comment comment,SecurityUser currentUser);
+    Comment updateComment(Integer adId, Integer commentId, Comment comment,UserDetails currentUser);
 
 }

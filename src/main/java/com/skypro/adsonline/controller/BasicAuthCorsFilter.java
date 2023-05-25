@@ -11,8 +11,6 @@ import java.io.IOException;
 
 @Component
 
-
-
 public class BasicAuthCorsFilter extends OncePerRequestFilter {
 
 
