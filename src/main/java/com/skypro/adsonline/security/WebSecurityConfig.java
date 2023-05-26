@@ -2,6 +2,7 @@ package com.skypro.adsonline.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,17 +21,18 @@ public class WebSecurityConfig {
             "/swagger-ui.html",
             "/v3/api-docs",
             "/webjars/**",
-            "/login", "/register","/ads"
+            "/login", "/register",
+            "/users_images/*", "/ads_images/*"
     };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests((authorization) -> authorization
-                        .requestMatchers(AUTH_WHITELIST)
-                        .permitAll()
-                        .requestMatchers("/ads/**", "/users/**")
-                        .authenticated())
+                        .requestMatchers(AUTH_WHITELIST).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/ads").permitAll()
+                        .requestMatchers("/ads/**", "/users/**").authenticated()
+                )
                 .cors()
                 .and()
                 .httpBasic(withDefaults());

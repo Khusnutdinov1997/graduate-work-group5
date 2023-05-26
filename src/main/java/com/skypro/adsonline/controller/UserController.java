@@ -14,8 +14,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Slf4j
 @CrossOrigin(value = "http://localhost:3000")
@@ -27,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
 
     private final UserService userService;
+    private final UserDetails userDetails;
     
     @Operation(
             summary = "Обновить пароль",
@@ -42,19 +46,14 @@ public class UserController {
                     @ApiResponse(
                             responseCode = "403",
                             description = "Forbidden"
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found"
                     )
             },
             tags = "Пользователи"
     )
     @PostMapping("/set_password")
-    public ResponseEntity<User> setPassword(@RequestBody NewPassword password,
-            @AuthenticationPrincipal SecurityUser currentUser) {
+    public ResponseEntity<User> setPassword(@RequestBody NewPassword password) {
 
-        User user = userService.setPassword(password, currentUser);
+        User user = userService.setPassword(password, userDetails);
 
         if (user != null) {
             return ResponseEntity.ok(user);
@@ -77,21 +76,13 @@ public class UserController {
                     @ApiResponse(
                             responseCode = "401",
                             description = "NOT authorized"
-                    ),
-                    @ApiResponse(
-                            responseCode = "403",
-                            description = "Forbidden"
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found"
                     )
             },
             tags = "Пользователи"
     )
     @GetMapping("/me")
-    public ResponseEntity<User> getUser(@AuthenticationPrincipal SecurityUser currentUser) {
-        User user = userService.getUser(currentUser);
+    public ResponseEntity<User> getUser() {
+        User user = userService.getUser(userDetails);
         if (user != null) {
             return ResponseEntity.ok(user);
         } else {
@@ -111,28 +102,15 @@ public class UserController {
                             )
                     ),
                     @ApiResponse(
-                            responseCode = "204",
-                            description = "No Content"
-                    ),
-                    @ApiResponse(
                             responseCode = "401",
                             description = "NOT authorized"
-                    ),
-                    @ApiResponse(
-                            responseCode = "403",
-                            description = "Forbidden"
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found"
                     )
             },
             tags = "Пользователи"
     )
     @PatchMapping("/me")
-    public ResponseEntity<?> updateUser(@RequestBody User userN,
-                                        @AuthenticationPrincipal SecurityUser currentUser) {
-        if (userService.updateUser(userN,currentUser)) {
+    public ResponseEntity<?> updateUser(@RequestBody User userN) {
+        if (userService.updateUser(userN,userDetails)) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -149,18 +127,15 @@ public class UserController {
                     @ApiResponse(
                             responseCode = "401",
                             description = "NOT authorized"
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found"
                     )
             },
             tags = "Пользователи"
     )
     @PatchMapping(value = "/me/image", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<?> updateUserImage(@RequestPart(name = "image") MultipartFile image) {
-        if (userService.updateUserImage(image)) {
-            return ResponseEntity.ok().build();
+    public ResponseEntity<User> updateUserImage(@RequestPart(name = "image") MultipartFile image) throws IOException {
+        User user = userService.updateUserImage(image, userDetails);
+        if (user != null) {
+            return ResponseEntity.ok(user);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

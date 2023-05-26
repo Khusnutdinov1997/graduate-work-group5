@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -26,6 +27,7 @@ public class CommentController {
 
 
     private final CommentService commentsService;
+    private final UserDetails userDetails;
 
     @Operation(
             summary = "Получить ответ на объявления",
@@ -41,17 +43,13 @@ public class CommentController {
                     @ApiResponse(
                             responseCode = "401",
                             description = "NOT authorized"
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found"
                     )
             },
             tags = "Комментарии"
     )
-    @GetMapping("{id}/comment")
+    @GetMapping("{id}/comments")
     public ResponseEntity<ResponseWrapperComment> getComments(@PathVariable Integer id) {
-        ResponseWrapperComment comment = commentsService.getComments(id);
+        ResponseWrapperComment comment = commentsService.getComments(id,userDetails);
         if(comment != null) {
             return ResponseEntity.ok(comment);
         } else {
@@ -73,24 +71,15 @@ public class CommentController {
                     @ApiResponse(
                             responseCode = "401",
                             description = "NOT authorized"
-                    ),
-                    @ApiResponse(
-                            responseCode = "403",
-                            description = "Forbidden"
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found"
                     )
             },
             tags = "Комментарии"
     )
-    @PostMapping("/{id}/comment")
-    public ResponseEntity<Comment> addReply(@PathVariable Integer id,
-                                            @RequestBody Comment comment,
-                                            @AuthenticationPrincipal SecurityUser currentUser) {
+    @PostMapping("/{id}/comments")
+    public ResponseEntity<Comment> addComment(@PathVariable Integer id,
+                                            @RequestBody Comment comment) {
 
-        Comment newComment = commentsService.addComment(id, comment,currentUser);
+        Comment newComment = commentsService.addComment(id, comment,userDetails);
 
         if(newComment != null) {
             return ResponseEntity.ok(newComment);
@@ -113,19 +102,14 @@ public class CommentController {
                     @ApiResponse(
                             responseCode = "403",
                             description = "Forbidden"
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found"
                     )
             },
             tags = "Комментарии"
     )
-    @DeleteMapping("/{adId}/comment/{commentId}")
+    @DeleteMapping("/{adId}/comments/{commentId}")
     public ResponseEntity<?> deleteComment(@PathVariable Integer adId,
-                                           @PathVariable Integer commentId,
-                                           @AuthenticationPrincipal SecurityUser currentUser) {
-        if(commentsService.deleteComment(adId, commentId, currentUser)) {
+                                           @PathVariable Integer commentId) {
+        if(commentsService.deleteComment(adId, commentId, userDetails)) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -150,22 +134,17 @@ public class CommentController {
                     @ApiResponse(
                             responseCode = "403",
                             description = "Forbidden"
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found"
                     )
             },
             tags = "Комментарии"
     )
-    @PatchMapping("/{adId}/comment/{commentId}")
+    @PatchMapping("/{adId}/comments/{commentId}")
     public ResponseEntity<?> updateComment(
             @PathVariable Integer adId,
             @PathVariable Integer commentId,
-            @RequestBody Comment comment,
-            @AuthenticationPrincipal SecurityUser currentUser) {
+            @RequestBody Comment comment) {
 
-        Comment updatedComment = commentsService.updateComment(adId, commentId, comment,currentUser);
+        Comment updatedComment = commentsService.updateComment(adId, commentId, comment,userDetails);
         if(updatedComment != null) {
             return ResponseEntity.ok(updatedComment);
         } else {

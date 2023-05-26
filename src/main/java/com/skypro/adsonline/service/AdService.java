@@ -4,25 +4,29 @@ import com.skypro.adsonline.dto.Ads;
 import com.skypro.adsonline.dto.FullAds;
 import com.skypro.adsonline.dto.CreateAds;
 import com.skypro.adsonline.dto.ResponseWrapperAds;
-import com.skypro.adsonline.security.SecurityUser;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 
 public interface AdService {
 
-    Ads addAd(CreateAds properties, MultipartFile image, SecurityUser currentUser);
+    Ads addAd(CreateAds properties, MultipartFile image, UserDetails currentUser) throws IOException;
 
-    FullAds getAds(Integer id);
+    FullAds getAds(Integer id,UserDetails currentUser);
 
-    boolean removeAd(Integer id,SecurityUser currentUser);
+    boolean removeAd(Integer id,UserDetails currentUser)throws IOException;
 
-    Ads updateAds(Integer id, CreateAds ads,SecurityUser currentUser);
+    Ads updateAds(Integer id, CreateAds ads,UserDetails currentUser);
 
-    ResponseWrapperAds getAdsMe(SecurityUser currentUser);
+    ResponseWrapperAds getAdsMe(UserDetails currentUser);
 
     ResponseWrapperAds getAllAds();
 
-    boolean updateImage(Integer id, MultipartFile image,SecurityUser currentUser);
+    boolean updateImage(Integer id, MultipartFile image,UserDetails currentUser) throws IOException;
 
     ResponseWrapperAds getAdsByTitleMatch(String title);
+
+    void checkAccess(Integer id, UserDetails currentUser);
 }

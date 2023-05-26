@@ -24,16 +24,16 @@ public class CommentMapper {
     }
     /**
      * Dto -> model mapping
-     * @param advId advertesement id
+     * @param adId advertesement id
      * @param dto input dto class
      * @return model class
      */
-    public CommentModel mapToCommentModel(Integer advId, Comment dto) {
+    public CommentModel mapToCommentModel(Integer adId, Comment dto) {
         UserModel user = userRepository.findById(dto.getAuthor()).orElse(null);
         if (user == null) {
             throw new UserNotFoundException("User not found");
         }
-        AdModel adModel = adRepository.findById(advId).orElse(null);
+        AdModel adModel = adRepository.findById(adId).orElse(null);
         if (adModel == null) {
             throw new AdNotFoundException("Advertisement not found");
         }

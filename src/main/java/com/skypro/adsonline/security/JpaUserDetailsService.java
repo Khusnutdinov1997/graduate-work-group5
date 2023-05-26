@@ -17,11 +17,13 @@ public class JpaUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder encoder;
+    private final SecurityUser securityUser;
 
-    public JpaUserDetailsService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder encoder) {
+    public JpaUserDetailsService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder encoder, SecurityUser securityUser) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.encoder = encoder;
+        this.securityUser = securityUser;
     }
 
     @Override
@@ -30,12 +32,8 @@ public class JpaUserDetailsService implements UserDetailsService {
         if (userFromDb == null) {
             throw new UserNotFoundException("User %s not found".formatted(username));
         }
-        return new SecurityUser(userFromDb);
+        securityUser.setUser(userFromDb);
+        return securityUser;
     }
 
-    public UserModel saveUser(RegisterReq registerReq) {
-        UserModel user = userMapper.mapToUserModel(registerReq);
-        user.setPassword(encoder.encode(registerReq.getPassword()));
-        return userRepository.save(user);
-    }
 }

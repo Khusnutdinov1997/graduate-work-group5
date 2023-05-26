@@ -25,7 +25,7 @@ public class AdMapper {
      * @return AdModel model class
      */
 
-    public AdModel mapToAdModel(CreateAds dto, MultipartFile image, String username) {
+    public AdModel mapToAdModel(CreateAds dto, String username) {
 
         UserModel user = userRepository.findByUsername(username);
 
@@ -37,7 +37,6 @@ public class AdMapper {
         model.setTitle(dto.getTitle());
         model.setDescription(dto.getDescription());
         model.setPrice(dto.getPrice());
-        model.setImage(null);
         model.setAuthor(user);
         return model;
     }
