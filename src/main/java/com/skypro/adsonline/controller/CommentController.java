@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("ads")
 
-
 public class CommentController {
 
 
