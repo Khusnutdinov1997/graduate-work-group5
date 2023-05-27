@@ -48,7 +48,7 @@ public class CommentController {
             },
             tags = "Комментарии"
     )
-    @GetMapping("{id}/comment")
+    @GetMapping("{id}/comments")
     public ResponseEntity<ResponseWrapperComment> getComments(@PathVariable Integer id) {
         ResponseWrapperComment comment = commentsService.getComments(id,userDetails);
         if(comment != null) {
@@ -76,7 +76,7 @@ public class CommentController {
             },
             tags = "Комментарии"
     )
-    @PostMapping("/{id}/comment")
+    @PostMapping("/{id}/comments")
     public ResponseEntity<Comment> addComment(@PathVariable Integer id,
                                             @RequestBody Comment comment) {
 
@@ -107,7 +107,7 @@ public class CommentController {
             },
             tags = "Комментарии"
     )
-    @DeleteMapping("/{adId}/comment/{commentId}")
+    @DeleteMapping("/{adId}/comments/{commentId}")
     public ResponseEntity<?> deleteComment(@PathVariable Integer adId,
                                            @PathVariable Integer commentId) {
         if(commentsService.deleteComment(adId, commentId, userDetails)) {
@@ -139,7 +139,7 @@ public class CommentController {
             },
             tags = "Комментарии"
     )
-    @PatchMapping("/{adId}/comment/{commentId}")
+    @PatchMapping("/{adId}/comments/{commentId}")
     public ResponseEntity<?> updateComment(
             @PathVariable Integer adId,
             @PathVariable Integer commentId,

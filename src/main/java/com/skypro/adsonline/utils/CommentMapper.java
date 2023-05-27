@@ -22,28 +22,6 @@ public class CommentMapper {
         this.userRepository = userRepository;
         this.adRepository = adRepository;
     }
-    /**
-     * Dto -> model mapping
-     * @param adId advertesement id
-     * @param dto input dto class
-     * @return model class
-     */
-    public CommentModel mapToCommentModel(Integer adId, Comment dto) {
-        UserModel user = userRepository.findById(dto.getAuthor()).orElse(null);
-        if (user == null) {
-            throw new UserNotFoundException("User not found");
-        }
-        AdModel adModel = adRepository.findById(adId).orElse(null);
-        if (adModel == null) {
-            throw new AdNotFoundException("Advertisement not found");
-        }
-        CommentModel commentModel = new CommentModel();
-        commentModel.setAuthor(user);
-        commentModel.setAd(adModel);
-        commentModel.setCreationDateTime(dto.getCreationDateTime());
-        commentModel.setText(dto.getText());
-        return commentModel;
-    }
 
     /**
      * Model -> dto mapping

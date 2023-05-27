@@ -54,6 +54,12 @@ public class AuthServiceImpl implements AuthService {
         return true;
     }
 
+    /**
+     * For registering users - saving during registration.
+     * User mapper is used when mapping to User Model .
+     * @param registerReq from registration
+     */
+
     public UserModel saveUser(RegisterReq registerReq) {
         UserModel user = userMapper.mapToUserModel(registerReq);
         user.setPassword(encoder.encode(registerReq.getPassword()));

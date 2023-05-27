@@ -14,7 +14,6 @@ public interface ImageService {
 
     void getUserImageFromDisk(HttpServletResponse response, Path filePath, ImageModelUser imageModelUser) throws IOException;
     void getAdImageFromDisk(HttpServletResponse response, Path filePath, ImageModelAd imageModelAd) throws IOException;
-
     void updateImageUser(UserModel user, MultipartFile image, Path filePath);
     void updateImageAd(AdModel ad, MultipartFile image, Path filePath);
     String getExtension(String fileName);
