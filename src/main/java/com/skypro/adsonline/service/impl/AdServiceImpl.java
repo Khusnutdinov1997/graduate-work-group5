@@ -141,7 +141,7 @@ public class AdServiceImpl implements AdService {
                 .getAuthor()
                 .getUsername();
         if (!authorUser.equals(currentUser.getUsername())
-                || !currentUser.getAuthorities().contains(new SimpleGrantedAuthority(Role.ADMIN.name()))) {
+                && !currentUser.getAuthorities().contains(new SimpleGrantedAuthority(Role.ADMIN.name()))) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access Denied!".formatted(currentUser.getUsername()));
         }
     }

@@ -56,6 +56,12 @@ public class ImageServiceImpl implements ImageService {
         }
     }
 
+    /**
+     * Update user image.
+     * @param user user whose image to be changed
+     * @param image image itself
+     * @param filePath image file path on disk (where it is to be saved)
+     */
     @Override
     public void updateImageUser(UserModel user, MultipartFile image, Path filePath) {
         ImageModelUser userImage = imageRepositoryUser.findByUser(user).orElse(new ImageModelUser());
@@ -69,6 +75,13 @@ public class ImageServiceImpl implements ImageService {
 
     }
 
+
+    /**
+     * Update Advetisting image.
+     * @param ad advertisement which image to be changed
+     * @param image image itself
+     * @param filePath image file path on disk (where it is to be saved)
+     */
     @Override
     public void updateImageAd(AdModel ad, MultipartFile image, Path filePath) {
         ImageModelAd adImage = imageRepositoryAd.findByAd(ad).orElse(new ImageModelAd());
@@ -78,7 +91,6 @@ public class ImageServiceImpl implements ImageService {
         adImage.setMediaType(image.getContentType());
         adImage.setAd(ad);
         imageRepositoryAd.save(adImage);
-
     }
 
     @Override
@@ -86,6 +98,11 @@ public class ImageServiceImpl implements ImageService {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
+    /**
+     * Saving image file (users' or ad's) on disk.
+     * @param image image itself
+     * @param filePath image file path on disk (where it is to be saved)
+     */
     @Override
     public void saveFileOnDisk(MultipartFile image, Path filePath) throws IOException {
         Files.createDirectories(filePath.getParent());
