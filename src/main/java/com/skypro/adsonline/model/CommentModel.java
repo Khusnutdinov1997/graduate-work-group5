@@ -23,7 +23,7 @@ public class CommentModel {
     @JoinColumn(name = "ad_id", foreignKey = @ForeignKey(name = "fk_comments_ads"))
     private AdModel ad;
 
-    private long creationDateTime;
+    private long createdAt;
     private String text;
 
 }

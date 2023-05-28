@@ -19,6 +19,7 @@ public class UserModel {
     private String firstName;
     private String lastName;
     private String phone;
+    //@Enumerated(value = EnumType.STRING)
     private Role role;
     private String image;
 

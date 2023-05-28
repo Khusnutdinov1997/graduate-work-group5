@@ -56,7 +56,7 @@ public class CommentServiceImpl implements CommentService {
         CommentModel commentModel = new CommentModel();
         commentModel.setAuthor(author);
         commentModel.setAd(adModel);
-        commentModel.setCreationDateTime(System.currentTimeMillis());
+        commentModel.setCreatedAt(System.currentTimeMillis());
         commentModel.setText(comment.getText());
 
         commentRepository.save(commentModel);
